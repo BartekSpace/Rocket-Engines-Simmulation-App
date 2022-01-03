@@ -1,0 +1,6 @@
+numpy>=1.22.0
+rocketcea >= 1.1.25
+matplotlib>=3.5.1
+Kivy>=2.0.0
+Eel>=0.14.0
+pytest>=6.2.5

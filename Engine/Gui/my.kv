@@ -1,0 +1,206 @@
+<MyGrid>
+    GridLayout:
+        cols:1
+        size: root.width, root.height
+
+        GridLayout:
+            cols:1
+            Label:
+                text: "Engine"
+        GridLayout:
+            cols:2
+
+            Label:
+                text: "Time [s]: "
+                font_size: 15
+
+            TextInput:
+                multiline:False
+                id: time
+                text: "15"
+                size_hint_x: None
+                size_hint_y: None
+                height: 30
+                width: 140
+                pos_hint: {'center_x': 0.2, 'center_y': 0.705}
+
+            Label:
+                text: "Injector holes diameter [mm]: "
+            TextInput:
+                multiline:False
+                id: injector_hole_diam
+                text: "1.5"
+
+
+            Label:
+                text: "Number of holes: "
+            TextInput:
+                multiline:False
+                id: injector_holes_num
+                text: "36"
+
+            Label:
+                text: "Throat diameter [mm]: "
+            TextInput:
+                multiline:False
+                id: throat_diameter
+                text: "33"
+
+            Label:
+                text: "Exit nozzle diameter [mm]: "
+            TextInput:
+                multiline:False
+                id: exit_diameter
+                text: "70"
+
+            Label:
+                text: "K loss: "
+            TextInput:
+                text: "4.2"
+                multiline:False
+                id: K_loss
+
+        GridLayout:
+            cols:1
+            Label:
+                text: "Fuel"
+        GridLayout:
+            cols:2
+            Label:
+                text: "Name: "
+            TextInput:
+                multiline:False
+                id: fuel_name
+                text: "Nylon"
+            Label:
+                text: "Formula: "
+
+            TextInput:
+                multiline:False
+                id: fuel_formula
+                text: "C 6.0   H 11.0   O 1.0  N 1.0"
+            Label:
+                text: "Initial Temperature [K]: "
+            TextInput:
+                multiline:False
+                id: fuel_temp
+                text: "300"
+            Label:
+                text: "Enthalpy of Formation [kj/mol]: "
+            TextInput:
+                multiline:False
+                id: fuel_enth
+                text: "61"
+
+            Label:
+                text: "Length [mm]: "
+            TextInput:
+                multiline:False
+                id: fuel_length
+                text: "1000"
+            Label:
+                text: "Port diameter [mm]: "
+            TextInput:
+                multiline:False
+                id: fuel_port_diameter
+                text: "61"
+            Label:
+                text: "Density [kg/m3]: "
+            TextInput:
+                multiline:False
+                id: fuel_density
+                text: "1130"
+            Label:
+                text: "a ballistic: "
+            TextInput:
+                multiline:False
+                id: fuel_a
+                text: "0.00772597539149796"
+            Label:
+                text: "n ballistic: "
+
+            TextInput:
+                multiline:False
+                id: fuel_n
+                text: "0.777265794840152"
+
+        GridLayout:
+            cols:1
+            Label:
+                text: "Vessel"
+
+        GridLayout:
+            cols:2
+            Label:
+                text: "Pressure [bar]: "
+            TextInput:
+                multiline:False
+                id: vessel_press
+                text: "60"
+
+            Label:
+                text: "Volume [dm3]: "
+            TextInput:
+                multiline:False
+                id: vessel_vol
+                text: "15"
+
+
+
+        GridLayout:
+            cols:1
+            Label:
+                text: "Oxidizer"
+        GridLayout:
+            cols:2
+            Label:
+                text: "Name: "
+            TextInput:
+                multiline:False
+                id: oxid_name
+                text: "Nitrous"
+
+            Label:
+                text: "Formula: "
+            TextInput:
+                multiline:False
+                id: oxid_formula
+                text: "N 2 O 1"
+            Label:
+                text: "Initial Temperature [K]: "
+            TextInput:
+                multiline:False
+                id: oxid_temp
+                text: "300"
+            Label:
+                text: "Enthalpy of Formation [kj/mol]: "
+            TextInput:
+                multiline:False
+                id: oxid_enth
+                text:  "75.24"
+
+            Label:
+                text: "Mass [kg]: "
+            TextInput:
+                multiline:False
+                id: oxid_mass
+                text: "10"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Button:
+            text: "Submit"
+            on_press: app.store_values()
+
+

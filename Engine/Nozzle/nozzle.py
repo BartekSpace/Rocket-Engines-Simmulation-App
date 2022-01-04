@@ -6,8 +6,8 @@ class Nozzle:
         self._diam_exit = diameter_exit
         self._area_th = np.pi*(diameter_throat/1000)**2/4
         # self._fuel = fuel
-        self._c_star = 0
-        self._isp = 0
+        # self._c_star = 0
+        # self._isp = 0
         self._esp = (diameter_exit / diameter_throat)**2
 
     @property

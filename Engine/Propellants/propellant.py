@@ -29,3 +29,7 @@ class Propellant(ABC):
     @abstractmethod
     def mass_flow(self, val):
         pass
+
+    @abstractmethod
+    def add_propellant(self):
+        pass

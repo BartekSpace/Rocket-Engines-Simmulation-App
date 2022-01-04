@@ -13,7 +13,7 @@ from rocketcea.cea_obj import add_new_oxidizer
 class Oxidizer(Propellant):
     def __init__(self, temp, enth, name, formula):
         super().__init__(temp, enth, name, formula)
-        self.add_oxid()
+        self.add_propellant()
         self._mass_flow = Container(0.00001)  ## nonzero value
         self._vaporized_mass = 0.00001
         self.init = None
@@ -55,15 +55,25 @@ class Oxidizer(Propellant):
         mass_flow = (2 * dens * drop * 100000 / injector.D_loss) ** 0.5
         self.mass_flow.val = mass_flow
 
-    def calculate_new_temp_liquid(self, vessel):
+    def add_propellant(self):
+        # string = """
+        # oxid """ + name + """ """ + formula + """  wt%=100.00
+        # h,kJ/mol="""+enthalpy+"""   t(k)=""" + temperature
+        string = """
+            oxid {} {} wt%=100.00
+            h,kJ/mol={}     t(k)={}""".format(self.name, self.formula, self.enthalpy_formation,
+                                              self.initial_temperature)
+        add_new_oxidizer(self.name, string)
+
+    def __calculate_new_temp_liquid(self, vessel):
         Enth_of_vap = nox_enthV(vessel.temp)
         Spec_heat_cap = nox_Cpl(vessel.temp)
         deltaQ = self._vaporized_mass * Enth_of_vap
         deltaTemp = -(deltaQ / (vessel.mass_liquid * Spec_heat_cap))
         vessel.temp += deltaTemp
 
-    def next_iteration_liquid(self, pressure, vessel, injector):
-        self.calculate_new_temp_liquid(vessel)
+    def __next_iteration_liquid(self, pressure, vessel, injector):
+        self.__calculate_new_temp_liquid(vessel)
         self.calculate_mass_flow(vessel, injector, pressure)
 
         delta_outflow_mass = 0.5 * delta_time * \
@@ -79,7 +89,7 @@ class Oxidizer(Propellant):
             return False
         return True
 
-    def update_press_and_temp_gas(self, vessel):
+    def __update_press_and_temp_gas(self, vessel):
         current_z_guess = np.interp(vessel.press, (0, pCrit), (1, ZCrit))
         step = 1 / 0.9
         Aim = 0
@@ -108,20 +118,20 @@ class Oxidizer(Propellant):
             #     break
         return press, temp
 
-    def next_iteration_gas(self, vessel, injector, pressure):
+    def __next_iteration_gas(self, vessel, injector, pressure):
         self.calculate_mass_flow(vessel, injector, pressure)
         delta_outflow_mass = 0.5 * delta_time * \
                              (3.0 * self._mass_flow - self._mass_flow.old)
         vessel.mass_total -= delta_outflow_mass
 
-        vessel.press, vessel.temp = self.update_press_and_temp_gas(vessel)
+        vessel.press, vessel.temp = self.__update_press_and_temp_gas(vessel)
 
         exp = 1 / (Gamma - 1)
         vessel.dens_vap = self.init.dens * (vessel.temp / self.init.temp) ** exp
 
     def next_iteration(self, vessel, injector, pressure):
         if vessel.hasLiquid:
-            has_liquid = self.next_iteration_liquid(pressure, vessel, injector)
+            has_liquid = self.__next_iteration_liquid(pressure, vessel, injector)
             if not has_liquid:
                 self.init = InitialVapour(vessel.temp, vessel.mass_total, vessel.press,
                                           vessel.dens_vap)
@@ -132,14 +142,7 @@ class Oxidizer(Propellant):
             if self.init is None:
                 self.init = InitialVapour(vessel.temp, vessel.mass_total, vessel.press,
                                           vessel.dens_vap)
-            self.next_iteration_gas(vessel, injector, pressure)
+            self.__next_iteration_gas(vessel, injector, pressure)
             return True
 
-    def add_oxid(self):
-        # string = """
-        # oxid """ + name + """ """ + formula + """  wt%=100.00
-        # h,kJ/mol="""+enthalpy+"""   t(k)=""" + temperature
-        string = """
-           oxid {} {} wt%=100.00
-           h,kJ/mol={}     t(k)={}""".format(self.name, self.formula, self.enthalpy_formation, self.initial_temperature)
-        add_new_oxidizer(self.name, string)
+

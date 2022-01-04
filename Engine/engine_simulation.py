@@ -25,7 +25,7 @@ class Engine:
 
         self.evaluate_chamber_pressure()
 
-        self._names = ["time", "pressure_combustion", "fuel_mass_flow", "oxid_mass_flow", "pressure_vessel",
+        self._names = ["time", "pressure_chamber", "fuel_mass_flow", "oxid_mass_flow", "pressure_vessel",
                        "thrust", "isp", "c_star", "of", "diam_port"]
         self._data = dict.fromkeys(self._names, [])
         for key in self._data.keys():
@@ -106,6 +106,7 @@ class Engine:
 
     def evaluate_chamber_pressure(self):
 
+
         press = Container(10, 1)
 
 
@@ -153,7 +154,7 @@ class Engine:
 
     def collect_data(self):
         self._data['time'].append(len(self._data['time']) * delta_time)
-        self._data['pressure_combustion'].append(self.pressure)
+        self._data['pressure_chamber'].append(self.pressure)
         self._data['fuel_mass_flow'].append(self.fuel.mass_flow)
         self._data['oxid_mass_flow'].append(self.oxid.mass_flow.val)
         self._data['pressure_vessel'].append(self.vessel.press)

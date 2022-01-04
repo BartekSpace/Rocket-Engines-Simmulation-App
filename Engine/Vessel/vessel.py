@@ -21,7 +21,7 @@ class Vessel:
         self.dens_liq = nox_Lrho(self._temp)
         self.dens_vap = nox_Vrho(self._temp)
         self._vol = volume
-        self.hasLiquid = self.calculate_amount_of_liquid(mass) > 0
+        self.hasLiquid = self.__calculate_amount_of_liquid(mass) > 0
         self.mass_total = mass
 
     @property
@@ -60,7 +60,7 @@ class Vessel:
         if self.hasLiquid:
             # tmp = (1.0 / self.dens_liq) - (1.0 / self.dens_vap)
             # self.mass_liquid = (self.vol - (value / self.dens_vap)) / tmp
-            self.mass_liquid = self.calculate_amount_of_liquid()
+            self.mass_liquid = self.__calculate_amount_of_liquid()
             if self.mass_liquid <= 0:
                 self.mass_liquid = 0
                 self.hasLiquid = False
@@ -78,7 +78,7 @@ class Vessel:
             raise WrongInputData(value)
         self._mass_vapor = value
 
-    def calculate_amount_of_liquid(self, mass=None):
+    def __calculate_amount_of_liquid(self, mass=None):
         if mass is None:
             mass = self._mass_total
         tmp = (1.0 / self.dens_liq) - (1.0 / self.dens_vap)

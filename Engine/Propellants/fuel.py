@@ -15,7 +15,7 @@ class Fuel(Propellant):
         self._dens = dens
         # self._mass_flow = 0.00001  # nonzero value
         # add_fuel(name, formula, temp, enth)
-        self.add_fuel()
+        self.add_propellant()
         # self._flow = 0
 
     @property
@@ -73,7 +73,7 @@ class Fuel(Propellant):
 
         # 2 * 3.14 * radius * length / 1000 * dens * reg
 
-    def add_fuel(self):
+    def add_propellant(self):
         string = """
         fuel {} {} wt%=100.00
         h,kJ/mol={}     t(k)={}""".format(self.name, self.formula, self.enthalpy_formation, self.initial_temperature)

@@ -3,13 +3,14 @@ import numpy as np
 
 from Engine.Propellants.constants import pCrit, ZCrit, Gamma
 from Engine.Propellants.nitrous_thermodynamics import nox_enthV, nox_Cpl
-from Engine.config import delta_time
+from Engine.config import delta_time, non_negative
 from .propellant import Propellant
 
 from .side_classes import Container, InitialVapour
 from ..Exceptions.exceptions import LowPressureDropError
 from rocketcea.cea_obj_w_units import CEA_Obj
 from rocketcea.cea_obj import add_new_oxidizer
+
 class Oxidizer(Propellant):
     def __init__(self, temp, enth, name, formula):
         super().__init__(temp, enth, name, formula)
@@ -17,6 +18,12 @@ class Oxidizer(Propellant):
         self._mass_flow = Container(0.00001)  ## nonzero value
         self._vaporized_mass = 0.00001
         self.init = None
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self.__dict__ == other.__dict__
+
 
     @property
     def initial_temperature(self):

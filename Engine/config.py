@@ -1,9 +1,43 @@
 import os
 import sys
-
+import  numbers
 from rocketcea.cea_obj_w_units import CEA_Obj
 
+from Engine.Propellants.side_classes import Ballistic
+
 delta_time = 0.01
+
+# def non_negative(foo):
+#     def check(self, *args):
+#         for arg in args:
+#             if isinstance(arg, str):
+#                 continue
+#             if arg < 0:
+#                 raise ValueError("Should be positive value")
+#         return foo(*args)
+#     return check
+
+def non_negative(foo):
+    def check(*args):
+        for arg in args:
+            if isinstance(arg, str) or isinstance(arg, Ballistic):
+                continue
+            if arg < 0:
+                raise ValueError("Should be positive value")
+        return foo(*args)
+    return check
+
+def non_negative_val(fun):
+    def check(self, *args):
+        for arg in args:
+            if isinstance(arg, str):
+                continue
+            if arg < 0:
+                raise ValueError("Should be positive value")
+        return fun(self, *args)
+    return check
+
+
 
 
 def get_Isp(oxid_name, fuel_name, chamber_pressure, OF, eps_nozzle):

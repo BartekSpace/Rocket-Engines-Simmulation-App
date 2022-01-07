@@ -1,18 +1,32 @@
 import numpy as np
 
+from Engine.config import non_negative
 
+
+@non_negative
 class Nozzle:
-    def __init__(self, diameter_exit, diameter_throat):#, fuel):
+    def __init__(self, diameter_exit, diameter_throat, efficiency):#, fuel):
         self._diam_exit = diameter_exit
         self._area_th = np.pi*(diameter_throat/1000)**2/4
+        self._efficiency = efficiency
         # self._fuel = fuel
         # self._c_star = 0
         # self._isp = 0
         self._esp = (diameter_exit / diameter_throat)**2
 
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self.__dict__ == other.__dict__
+
+
     @property
     def diam_exit(self):
         return self._diam_exit
+
+    @property
+    def efficiency(self):
+        return self._efficiency
 
     @property
     def area_th(self):

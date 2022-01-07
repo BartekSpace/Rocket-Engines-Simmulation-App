@@ -1,14 +1,7 @@
 from Engine.Propellants.nitrous_thermodynamics import nox_vp,nox_Vrho, nox_Lrho, nox_on_press
 from Engine.Propellants.constants import pCrit
 from Engine.Exceptions.exceptions import WrongInputData
-
-def non_negative(foo):
-    def check(*args):
-        for arg in args:
-            if arg < 0:
-                raise ValueError("Should be positive value")
-        return foo(*args)
-    return check
+from Engine.config import non_negative
 
 
 @non_negative
@@ -23,6 +16,11 @@ class Vessel:
         self._vol = volume
         self.hasLiquid = self.__calculate_amount_of_liquid(mass) > 0
         self.mass_total = mass
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self.__dict__ == other.__dict__
 
     @property
     def vol(self):

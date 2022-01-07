@@ -1,0 +1,126 @@
+body {
+	font-family: Helvetica;
+	color:  #013a63;
+	background-color: #e3f2fd;
+	padding-bottom:  32px;
+}
+
+.title0 {
+	font-weight:  700;
+	font-size:  48px;
+	text-align: center;
+	padding-top:  16px;
+	padding-bottom:  0;
+}
+.title1 {
+	font-weight:  700;
+	font-size:  28px;
+	text-align: center;
+	padding:  16px;
+	margin-top: 32px;
+	margin-left:  5rem;
+	margin-right:  5rem;
+	border-bottom: solid;
+	border-color: #013a63;
+
+}
+
+.title2 {
+	font-weight:  700;
+	font-size:  20px;
+	text-align:  center;
+	padding:  16px;
+}
+
+.table {
+	margin-left: auto;
+  	margin-right: auto;
+}
+
+.param {
+	font-weight: 200;
+	font-size:  16px;
+	text-align: left;
+	padding:  4px;
+	width:  240px;
+}
+
+.input {
+	width:  200px;
+	font-weight: 200;
+	font-size:  16px;
+	text-align: left;
+	border-color: #013a63;
+	border-radius: 5px;
+	border-width: thin;
+}
+
+.checkbox{
+	/*https://www.w3schools.com/howto/howto_css_custom_checkbox.asp */
+}
+
+.comment {
+	font-size:  16px;
+	text-align: center;
+	color: red;
+	padding-top:  20px;
+}
+
+.description {
+	font-size:  16px;
+	text-align: center;
+	padding:  20px;
+}
+
+.bold {
+	font-weight: 700;
+	padding-bottom: 0px;
+
+}
+
+.files {
+	font-size:  16px;
+	text-align: center;
+	padding:  4px;
+}
+
+.button {
+  background-color: #e3f2fd;
+  color: #013a63;
+  border: 1px solid;
+  border-color: #013a63;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 16px;
+  padding: 10px 20px;
+  display: flex;
+  margin: auto;
+  cursor: pointer;
+  /*width: 170px;*/
+}
+
+.button:hover {
+  background-color: #013a63;
+  border: 1px solid;
+  border-color: #013a63;
+  color: #e3f2fd;
+}
+
+.buttonproperties {
+	padding-top: 30px;
+}
+
+.submit {
+	font-weight: 700;
+	border: 2px solid !important;
+}
+
+.submit:hover{
+	border: 2px solid !important;
+}
+
+.img {
+	/*display: flex;*/
+	/*margin: auto;*/
+	padding: 4px;
+}

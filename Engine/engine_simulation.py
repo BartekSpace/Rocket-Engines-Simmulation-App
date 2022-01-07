@@ -26,7 +26,7 @@ class Engine:
         self.evaluate_chamber_pressure()
 
         self._names = ["time", "pressure_chamber", "fuel_mass_flow", "oxid_mass_flow", "pressure_vessel",
-                       "thrust", "isp", "c_star", "of", "diam_port"]
+                       "thrust", "isp", "c_star", "of", "diam_port", "gox"]
         self._data = dict.fromkeys(self._names, [])
         for key in self._data.keys():
             self._data[key] = []
@@ -160,8 +160,9 @@ class Engine:
         self._data['pressure_vessel'].append(self.vessel.press)
         self._data['of'].append(self.oxid.mass_flow / self.fuel.mass_flow)
         isp = get_Isp(self.oxid.name, self.fuel.name, self.pressure, self.oxid.mass_flow / self.fuel.mass_flow,
-                      self.nozzle.esp)
+                      self.nozzle.esp)*self.nozzle.efficiency
         self._data['isp'].append(isp)
         self._data['thrust'].append(isp * 9.81 * (self.oxid.mass_flow + self.fuel.mass_flow))
         self._data['c_star'].append(self.c_star)
         self._data['diam_port'].append(self.fuel.diam_port)
+        self._data['gox'].append(self.oxid.mass_flow/self.fuel.port_area)

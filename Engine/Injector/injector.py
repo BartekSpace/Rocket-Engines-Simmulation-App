@@ -1,11 +1,4 @@
-def non_negative(foo):
-    def check(*args):
-        for arg in args:
-            if arg < 0:
-                raise ValueError("Should be positive value")
-        return foo(*args)
-
-    return check
+from Engine.config import non_negative
 
 
 @non_negative
@@ -14,6 +7,12 @@ class Injector:
         self._num_orifices = num_orifices
         self._diam_orifice = diameter_orifices
         self.D_loss = k_loss / (num_orifices * 3.14 * (diameter_orifices / 1000) ** 2 / 4) ** 2
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self.__dict__ == other.__dict__
+
 
     @property
     def num_orifices(self):

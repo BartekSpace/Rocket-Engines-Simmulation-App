@@ -7,6 +7,9 @@ class Ballistic:
         self._a = a
         self._n = n
 
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
     @property
     def a(self):
         return self._a
@@ -16,6 +19,8 @@ class Ballistic:
         return self._n
 
 
+
+
 class InitialVapour():
     def __init__(self, temp, mass, press, dens):
         self.temp = temp
@@ -23,6 +28,8 @@ class InitialVapour():
         self.press = press
         self.dens = dens
         self.Z = np.interp(press, (0, pCrit), (1, ZCrit))
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
 
 class Container:
@@ -96,3 +103,6 @@ class Container:
         self._old = self._val
         self._val /= other
         return self
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+

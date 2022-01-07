@@ -1,11 +1,12 @@
 import numpy as np
 
 from Engine.Propellants.propellant import Propellant
-from Engine.config import delta_time
+from Engine.config import delta_time, non_negative, non_negative_val
 from rocketcea.cea_obj import add_new_fuel
 
 
 class Fuel(Propellant):
+
 
     def __init__(self, temp, enth, name, formula, diam_port, length, dens, ballistic):
         super().__init__(temp, enth, name, formula)
@@ -13,10 +14,20 @@ class Fuel(Propellant):
         self._ballistic = ballistic
         self._length = length
         self._dens = dens
+        self._port_area = np.pi * (self.diam_port / 1000) ** 2 / 4
         # self._mass_flow = 0.00001  # nonzero value
         # add_fuel(name, formula, temp, enth)
         self.add_propellant()
         # self._flow = 0
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self.__dict__ == other.__dict__
+
+
+    @property
+    def port_area(self):
+        return self._port_area
 
     @property
     def initial_temperature(self):
@@ -42,9 +53,11 @@ class Fuel(Propellant):
     def diam_port(self):
         return self._diam_port
 
+
     @diam_port.setter
     def diam_port(self, val):
         self._diam_port = val
+        self._port_area = np.pi * (val / 1000) ** 2 / 4
 
     @property
     def mass_flow(self):
@@ -63,8 +76,8 @@ class Fuel(Propellant):
     #     self._flow = val
 
     def calculate_mass_flow(self, oxid_flow, change_diam_port=True):
-        port_area = np.pi * (self.diam_port / 1000) ** 2 / 4
-        gox = oxid_flow / port_area
+        # port_area = np.pi * (self.diam_port / 1000) ** 2 / 4
+        gox = oxid_flow / self.port_area
         reg = self.ballistic.a * gox ** self.ballistic.n / 1000
         if change_diam_port:
             self.diam_port += 2 * 1000 * reg * delta_time

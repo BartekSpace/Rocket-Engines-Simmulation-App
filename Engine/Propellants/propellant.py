@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 
+from Engine.config import non_negative
 
+
+# @non_negative
 class Propellant(ABC):
 
     def __init__(self, temp, enth, name, formula):
@@ -9,6 +12,7 @@ class Propellant(ABC):
         self.name = name
         self.formula = formula
         self._mass_flow = 0.00001
+
 
     @property
     @abstractmethod

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  <link rel="stylesheet" href="styles.css">
+		<title>
+
+		</title>
+		<script src="eel.js"></script>
+		<script type="text/javascript" src="scripts.js"></script>
+
+	</head>
+<body>
+
+<div class="title0">App</div>
+
+<div class="title1">Physical parameters</div>
+
+<div class="title2">Engine</div>
+
+<table class="table">
+	<tr>
+		<td class="param">Simulation time [s]</td>
+		<td><input class="input" type="text" id="simulationTime"></td>
+	</tr>
+	<tr>
+		<td class="param">Injector hole diameter [mm]</td>
+		<td><input class="input" type="text" id="injectorHoleDiameter" value="1.5"></td>
+	</tr>
+	<tr>
+		<td class="param">Holes number</td>
+		<td><input class="input" type="text" id="injectorHolesNumber" value="36"></td>
+	</tr>
+	<tr>
+		<td class="param">K loss</td>
+		<td><input class="input" type="text" id="injectorKLoss" value="3.5"></td>
+	</tr>
+	<tr>
+		<td class="param">Throat diameter [mm]</td>
+		<td><input class="input" type="text" id="nozzleThroatDiameter" value="34"></td>
+	</tr>
+	<tr>
+		<td class="param">Exit nozzle diameter [mm]</td>
+		<td><input class="input" type="text" id="nozzleExitDiameter" value="70"></td>
+	</tr>
+	<tr>
+		<td class="param">Real coefficient</td>
+		<td><input class="input" type="text" id="realCoefficient" value="0.8"></td>
+	</tr>
+</table>
+
+<div class="title2">Vessel</div>
+
+<table class="table">
+	<tr>
+		<td class="param">Pressure [bar]</td>
+		<td><input class="input" type="text" id="vesselPressure" value="55"></td>
+	</tr>
+	<tr>
+		<td class="param">Volume [l]</td>
+		<td><input class="input" type="text" id="vesselVolume" value="16"></td>
+	</tr>
+	<tr>
+		<td class="param">Oxidizer mass [kg]</td>
+		<td><input class="input" type="text" id="oxidizerMass" value="12"></td>
+	</tr>
+</table>
+
+<div class="title2">Fuel</div>
+
+<table class="table">
+	<tr>
+		<td class="param">Length [mm]</td>
+		<td><input class="input" type="text" id="fuelLength" value="1000"></td>
+	</tr>
+	<tr>
+		<td class="param">Port diameter [mm]</td>
+		<td><input class="input" type="text" id="fuelPortDiameter" value="60"></td>
+	</tr>
+	<tr>
+		<td class="param">Density [kg/m3]</td>
+		<td><input class="input" type="text" id="fuelDensity" value="1130"></td>
+	</tr>
+	<tr>
+		<td class="param">ballistic coefficient: a</td>
+		<td><input class="input" type="text" id="ballisticCoefficientA" value="0.00772597539149796"></td>
+	</tr>
+	<tr>
+		<td class="param">ballistic coefficient: n</td>
+		<td><input class="input" type="text" id="ballisticCoefficientN" value="0.777265794840152"></td>
+	</tr>
+</table>
+
+<div class="title1">Chemical properties</div>
+
+<div class="title2">Oxidizer</div>
+
+<table class="table">
+	<tr>
+		<td class="param">Name</td>
+		<td><input class="input" type="text" id="oxidizerName" value="nitrous"></td>
+	</tr>
+	<tr>
+		<td class="param">Formula</td>
+		<td><input class="input" type="text" id="oxidizerFormula" value="N 2 O 1"></td>
+	</tr>
+	<tr>
+		<td class="param">Initial temperature [K]</td>
+		<td><input class="input" type="text" id="oxidizerTemperature" value="300"></td>
+	</tr>
+	<tr>
+		<td class="param">Enthalpy [kJ/mol]</td>
+		<td><input class="input" type="text" id="oxidizerEnthalpy" value="75.24"></td>
+	</tr>
+</table>
+
+<div class="title2">Fuel</div>
+
+<table class="table">
+	<tr>
+		<td class="param">Name</td>
+		<td><input class="input" type="text" id="fuelName" value="nylon"></td>
+	</tr>
+	<tr>
+		<td class="param">Formula</td>
+		<td><input class="input" type="text" id="fuelFormula" value="C 6.0   H 11.0   O 1.0  N 1.0"></td>
+	</tr>
+	<tr>
+		<td class="param">Initial temperature [K]</td>
+		<td><input class="input" type="text" id="fuelTemperature" value="300"></td>
+	</tr>
+	<tr>
+		<td class="param">Enthalpy [kJ/mol]</td>
+		<td><input class="input" type="text" id="fuelEnthalpy" value="67.69"></td>
+	</tr>
+</table>
+
+<div class="title1">Plot</div>
+
+<table class="table">
+	<tr>
+		<td class="param">Vessel pressure</td>
+		<td><input class="checkbox" type="checkbox" id="plotVesselPressure"></td>
+	</tr>
+	<tr>
+		<td class="param">Combustion chamber pressure</td>
+		<td><input class="checkbox" type="checkbox" id="plotChamberPressure"></td>
+	</tr>
+	<tr>
+		<td class="param">Thrust</td>
+		<td><input class="checkbox" type="checkbox" id="plotThrust"></td>
+	</tr>
+	<tr>
+		<td class="param">Specific Impulse</td>
+		<td><input class="checkbox" type="checkbox" id="plotIsp"></td>
+	</tr>
+	<tr>
+		<td class="param">O/F ratio</td>
+		<td><input class="checkbox" type="checkbox" id="plotOF"></td>
+	</tr>
+	<tr>
+		<td class="param">Oxidizer mass flow</td>
+		<td><input class="checkbox" type="checkbox" id="plotOxidizerFlow"></td>
+	</tr>
+	<tr>
+		<td class="param">Fuel mass flow</td>
+		<td><input class="checkbox" type="checkbox" id="plotFuelFlow"></td>
+	</tr>
+	<tr>
+		<td class="param">Fuel port diameter</td>
+		<td><input class="checkbox" type="checkbox" id="plotFuelPortDiameter"></td>
+	</tr>
+	<tr>
+		<td class="param">Gox</td>
+		<td><input class="checkbox" type="checkbox" id="flowGox"></td>
+	</tr>
+</table>
+
+<div class="title1">Compare simulation with real data</div>
+
+<div class="description">Here you can upload your real data.</div>
+
+<button class="button" onclick="getPathToFile()">Select files</button>
+
+<div class="description bold">Your files:</div>
+
+<!-- DOROBIĆ WYSWIETLANIE NAZW JEDNA POD DRUGĄ -->
+<div class="description" id="files"></div>
+
+<!-- USTAWIĆ CO MA SIĘ ROBIĆ! -->
+<button class="button" onclick="deleteFiles()">Delete your files</button>
+
+<div class="title1">Submit</div>
+
+<div class="description">Choose your plot options, and click "submit" to see the results.</div>
+
+<table class="table">
+	<tr>
+		<td class="param">All pressures on one diagram:</td>
+		<td><input class="checkbox" type="checkbox" id="allPressures"></td>
+	</tr>
+	<tr>
+		<td class="param">All mass flows on one diagram:</td>
+		<td><input class="checkbox" type="checkbox" id="allMassFlows"></td>
+	</tr>
+	<tr>
+		<td class="param">Real and simulated data on one diagram:</td>
+		<td><input class="checkbox" type="checkbox" id="realAndSimulated"></td>
+	</tr>
+</table>
+
+<div class="buttonproperties">
+	<button class="button submit" onclick="callPython()">Submit</button>
+</div>
+
+<div class="title1">Results</div>
+<!--<button class="button submit" onclick="manage_images()">Submit</button>-->
+<div class="img" id="img"></div>
+<!--<div class="img" id="imgRealVesselPressure"></div>-->
+<!--<div class="img" id="imgChamberPressure"></div>-->
+<!--<div class="img" id="imgRealChamberPressure"></div>-->
+<!--<div class="img" id="imgThrust"></div>-->
+<!--<div class="img" id="imgRealThrust"></div>-->
+<!--<div class="img" id="imgIsp"></div>-->
+<!--<div class="img" id="imgOF"></div>-->
+<!--<div class="img" id="imgOxidizerFlow"></div>-->
+<!--<div class="img" id="imgFuelFlow"></div>-->
+<!--<div class="img" id="imgFuelPortDiameter"></div>-->
+<!--<div class="img" id="imgGox"></div>-->
+<!--<div class="comment">Nie wiem jak customizować checkboxy ;c</div>-->
+
+<!--<div class="title1">Submit (?)</div>-->
+
+<!--<div class="comment">Ogarnąć przyciski.</div>-->
+<!--<input type="file" id="file-upload">-->
+
+
+<!-- <form action="/action_page.php">-->
+<!--  <label for="files">Select files:</label>-->
+<!--  <input type="file" id="files" name="files" multiple><br><br>-->
+<!--&lt;!&ndash;  <input type="submit">&ndash;&gt;-->
+<!--</form>-->
+
+<!--<input type="submit" onClick="get_input_directory()" value="Send">-->
+<!--<a onClick="getFolder()">GetFolder</a>-->
+<!--<button type="button" onclick="getPathToFile()">Select File</button>-->
+
+<!--<div id="img"></div>-->
+</body>
+</html>
+
+<!--<script>-->
+<!--async function getFolder() {-->
+<!--var dosya_path = await eel.btn_ResimyoluClick()();-->
+<!--	if (dosya_path) {-->
+<!--		console.log(dosya_path);-->
+<!--	}-->
+<!--}-->
+<!--</script>-->
+<!--<a onclick="getFolder()">GetFolder</a>-->
+<!-- <script src="eel.js"></script>-->
+<!--    <script>-->
+<!--		function get_input_directory(){-->
+<!--			var data = document.getElementById("files").va-->
+<!--			eel.get_input(data)-->
+<!--		}-->
+<!--        // import * as inj from './classes'-->
+<!--		eel.expose(send_img)-->
+<!--		function send_img(){-->
+
+<!--			var img = '/img/sim_plot_0.png'-->
+<!--						var html = [-->
+<!--			  '<div class="uicomponent-panel-controls-container">',-->
+<!--			  '<img src=' + img + '>',-->
+<!--			  '</div>'-->
+<!--			].join('\n');-->
+<!--			document.getElementById('img').innerHTML = html-->
+<!--		}-->
+<!--        function callPython(){-->
+<!--            var time = document.getElementById("simulationTime").value-->
+<!--            var  inj_hole_diam= document.getElementById("injectorHoleDiameter").value-->
+<!--            var  inj_hole_num= document.getElementById("injectorHolesNumber").value-->
+<!--            var  inj_kloss= document.getElementById("injectorKLoss").value-->
+<!--            var  nozzle_throat_diam= document.getElementById("nozzleThroatDiameter").value-->
+<!--            var  nozzle_exit_diam= document.getElementById("nozzleExitDiameter").value-->
+<!--            var  eff = document.getElementById("realCoefficient").value-->
+<!--            var  ves_press= document.getElementById("vesselPressure").value-->
+<!--            var  ves_vol= document.getElementById("vesselVolume").value-->
+<!--            var  oxid_mass= document.getElementById("oxidizerMass").value-->
+<!--            var  fuel_len= document.getElementById("fuelLength").value-->
+<!--            var  fuel_dens= document.getElementById("fuelDensity").value-->
+<!--            var  c_a= document.getElementById("ballisticCoefficientA").value-->
+<!--            var  c_n= document.getElementById("ballisticCoefficientN").value-->
+<!--            var  oxid_name= document.getElementById("oxidizerName").value-->
+<!--            var  oxid_form= document.getElementById("oxidizerFormula").value-->
+<!--            var  oxid_temp= document.getElementById("oxidizerTemperature").value-->
+<!--            var  oxid_enth= document.getElementById("oxidizerEnthalpy").value-->
+<!--            var  fuel_name= document.getElementById("fuelName").value-->
+<!--            var  fuel_form= document.getElementById("fuelFormula").value-->
+<!--            var  fuel_temp= document.getElementById("fuelTemperature").value-->
+<!--            var  fuel_enth= document.getElementById("fuelEnthalpy").value-->
+<!--			var  fuel_port_diam= document.getElementById("fuelPortDiameter").value-->
+
+<!--			var checkbox_1 = Object.freeze({name: 'Thrust', val:document.getElementById("plotThrust").checked })-->
+<!--			eel.checkbox(checkbox_1)-->
+
+
+<!--			eel.injector(inj_hole_num, inj_hole_diam, inj_kloss)-->
+<!--			eel.nozzle(nozzle_exit_diam, nozzle_throat_diam, eff)-->
+<!--			eel.vessel(ves_press, ves_vol, oxid_mass)-->
+<!--			eel.fuel(fuel_temp, fuel_enth, fuel_name, fuel_form,fuel_port_diam, fuel_len, fuel_dens, c_a, c_n )-->
+<!--			eel.oxid(oxid_temp, oxid_enth, oxid_name, oxid_form)-->
+<!--			// eel.rest(time, eff)-->
+<!--			eel.save_cache(time)-->
+<!--			eel.run()-->
+
+
+<!--        }-->
+<!--    </script>-->

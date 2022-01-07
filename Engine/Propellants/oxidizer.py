@@ -1,4 +1,6 @@
 import numpy as np
+np.seterr(all='ignore')
+
 # from rocketcea.cea_obj import add_new_oxidizer
 
 from Engine.Propellants.constants import pCrit, ZCrit, Gamma
@@ -11,6 +13,7 @@ from ..Exceptions.exceptions import LowPressureDropError
 from rocketcea.cea_obj_w_units import CEA_Obj
 from rocketcea.cea_obj import add_new_oxidizer
 
+@non_negative
 class Oxidizer(Propellant):
     def __init__(self, temp, enth, name, formula):
         super().__init__(temp, enth, name, formula)

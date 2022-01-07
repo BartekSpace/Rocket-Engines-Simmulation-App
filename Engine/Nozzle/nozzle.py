@@ -1,4 +1,5 @@
 import numpy as np
+np.seterr(all='ignore')
 
 from Engine.config import non_negative
 

@@ -1,8 +1,10 @@
+import inspect
 import os
 import sys
-import  numbers
+
 from rocketcea.cea_obj_w_units import CEA_Obj
 
+from Engine.Exceptions.exceptions import NonPositiveValue
 from Engine.Propellants.side_classes import Ballistic
 
 delta_time = 0.01
@@ -19,11 +21,13 @@ delta_time = 0.01
 
 def non_negative(foo):
     def check(*args):
-        for arg in args:
-            if isinstance(arg, str) or isinstance(arg, Ballistic):
+
+        for arg, arg_name in zip(args,inspect.getfullargspec(foo).args[1:]):
+            if isinstance(arg, str) or isinstance(arg, Ballistic) or 'enth' in arg_name:
                 continue
-            if arg < 0:
-                raise ValueError("Should be positive value")
+            if arg <= 0:
+                # raise ValueError("Should be positive value")
+                raise NonPositiveValue(arg_name,foo.__name__, arg)
         return foo(*args)
     return check
 

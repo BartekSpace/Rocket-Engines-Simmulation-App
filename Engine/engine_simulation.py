@@ -5,6 +5,7 @@
 # delta_time = 0.01
 import sys
 
+from Engine.Exceptions.exceptions import LowPressureDropError
 from Engine.Propellants.side_classes import Container
 from Engine.config import delta_time, get_c_star, get_Isp
 
@@ -30,6 +31,16 @@ class Engine:
         self._data = dict.fromkeys(self._names, [])
         for key in self._data.keys():
             self._data[key] = []
+
+    def __eq__(self, other):
+        if not isinstance(other, Engine):
+            return False
+        a = self.oxid == other.oxid
+        a &= self.fuel == other.fuel
+        a &= self.nozzle == other.nozzle
+        a &= self.injector == other.injector
+        a &= self.vessel == other.vessel
+        return a
 
         # self._data['time'] = []
         # self._data['pressure_combustion'] = []
@@ -138,7 +149,7 @@ class Engine:
                 val.append(self.pressure)
                 self.collect_data()
                 time += delta_time
-            except:
+            except LowPressureDropError:
                 return self._data
 
             if self.pressure <= 1:

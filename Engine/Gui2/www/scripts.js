@@ -36,20 +36,21 @@ async function getPathToFile() {
     // eel.get_input(data)
     //                                 }
     // import * as inj from './classes'
-    eel.expose(send_img)
-    function send_img(){
-
-    var img = '/img/sim_plot_0.png'
-    var html = [
-    '<div class="uicomponent-panel-controls-container">',
-    '<img src=' + img + '>',
-    '</div>'
-    ].join('\n');
-    document.getElementById('img').innerHTML = html
-
-                        }
+    // eel.expose(send_img)
+    // function send_img(){
+    //
+    // var img = '/img/sim_plot_0.png'
+    // var html = [
+    // '<div class="uicomponent-panel-controls-container">',
+    // '<img src=' + img + '>',
+    // '</div>'
+    // ].join('\n');
+    // document.getElementById('img').innerHTML = html
+    //
+    //                     }
     eel.expose(manage_images)
     function manage_images(images){
+    document.getElementById("logs").innerHTML = ""
          // var images =['/img/sim_plot_0.png']
     // var images = fs.readdirSync('/img'
     //     console.log(images)
@@ -74,7 +75,7 @@ async function getPathToFile() {
 
 
     }
-    console.log(container)
+    // console.log(container)
     }
 
     function callPython(){
@@ -104,18 +105,27 @@ async function getPathToFile() {
 
     // eel.checkbox(checkbox_1)
     // eel.catch_checkboxes(send_checkboxes())
+    var engine = {
+        'Injector': [inj_hole_num, inj_hole_diam, inj_kloss],
+        'Nozzle': [nozzle_exit_diam, nozzle_throat_diam, eff],
+        'Vessel': [ves_press, ves_vol, oxid_mass],
+        'Fuel': [fuel_temp, fuel_enth, fuel_name, fuel_form,fuel_port_diam, fuel_len, fuel_dens, c_a, c_n],
+        'Oxidizer': [oxid_temp, oxid_enth, oxid_name, oxid_form]
 
-    eel.injector(inj_hole_num, inj_hole_diam, inj_kloss)
-    eel.nozzle(nozzle_exit_diam, nozzle_throat_diam, eff)
-    eel.vessel(ves_press, ves_vol, oxid_mass)
-    eel.fuel(fuel_temp, fuel_enth, fuel_name, fuel_form,fuel_port_diam, fuel_len, fuel_dens, c_a, c_n )
-    eel.oxid(oxid_temp, oxid_enth, oxid_name, oxid_form)
+    }
+
+    // eel.injector(inj_hole_num, inj_hole_diam, inj_kloss)
+    // eel.nozzle(nozzle_exit_diam, nozzle_throat_diam, eff)
+    // eel.vessel(ves_press, ves_vol, oxid_mass)
+    // eel.fuel(fuel_temp, fuel_enth, fuel_name, fuel_form,fuel_port_diam, fuel_len, fuel_dens, c_a, c_n )
+    // eel.oxid(oxid_temp, oxid_enth, oxid_name, oxid_form)
     // eel.rest(time, eff)
-    eel.save_cache(time)
-    eel.run(send_checkboxes())
+    // eel.save_cache(time)
+    eel.run(send_checkboxes(),time, engine)
 
 
 }
+
 
 function send_checkboxes(){
 
@@ -146,4 +156,29 @@ function send_checkboxes(){
 
 }
 
+// var input = document.getElementById("head");
+// input.addEventListener("keyup", function (event){
+//     if (event.keyCode === 13){
+//         event.preventDefault();
+//         document.getElementById("submit").click()
+//     }
+// })
+
+document.addEventListener("keyup", function(evnt){
+
+    if (evnt.keyCode === 13)
+     {
+       document.getElementById("submit").click()
+     }
+});
+eel.expose(sendLogs)
+function sendLogs(logs){
+    document.getElementById("logs").innerHTML = logs
+
+}
+  // document.onkeyup(function (event){
+  //       if(event.keyCode === 13){
+  //               document.getElementById("submit").click()
+  //       }
+  //   })
 

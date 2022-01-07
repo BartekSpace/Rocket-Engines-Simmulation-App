@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-	<head>
+	<head >
   <link rel="stylesheet" href="styles.css">
 		<title>
 
@@ -9,7 +9,7 @@
 		<script type="text/javascript" src="scripts.js"></script>
 
 	</head>
-<body>
+<body id="head">
 
 <div class="title0">App</div>
 
@@ -209,11 +209,11 @@
 </table>
 
 <div class="buttonproperties">
-	<button class="button submit" onclick="callPython()">Submit</button>
+	<button class="button submit" onclick="callPython()" id="submit" >Submit</button>
 </div>
 
 <div class="title1">Results</div>
-<!--<button class="button submit" onclick="manage_images()">Submit</button>-->
+<div class="system-message" id="logs"></div>
 <div class="img" id="img"></div>
 <!--<div class="img" id="imgRealVesselPressure"></div>-->
 <!--<div class="img" id="imgChamberPressure"></div>-->

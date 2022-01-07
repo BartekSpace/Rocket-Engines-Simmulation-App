@@ -1,4 +1,6 @@
 import numpy as np
+np.seterr(all='ignore')
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from itertools import chain

@@ -1,10 +1,10 @@
 import numpy as np
-
+np.seterr(all='ignore')
 from Engine.Propellants.propellant import Propellant
 from Engine.config import delta_time, non_negative, non_negative_val
 from rocketcea.cea_obj import add_new_fuel
 
-
+@non_negative
 class Fuel(Propellant):
 
 

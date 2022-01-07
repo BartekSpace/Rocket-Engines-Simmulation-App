@@ -1,14 +1,22 @@
 from Engine.Propellants.nitrous_thermodynamics import nox_vp,nox_Vrho, nox_Lrho, nox_on_press
 from Engine.Propellants.constants import pCrit
-from Engine.Exceptions.exceptions import WrongInputData
+from Engine.Exceptions.exceptions import WrongInputData, UnphysicalData, NonPositiveValue
 from Engine.config import non_negative
 
 
 @non_negative
 class Vessel:
     def __init__(self, pressure, volume, mass):
+
+        # if mass < 0:
+        #     # raise ValueError("Vessel: Mass must be non negative!")
+        #     raise NonPositiveValue('Mass', type(self).__name__)
+        # if volume <= 0:
+        #     raise NonPositiveValue('Volume',type(self).__name__)
         if pressure > pCrit:
-            raise ValueError("Critical pressure reached!")
+            raise WrongInputData('Critical',type(self).__name__,"pressure reached!")
+        if pressure <= 1:
+            raise WrongInputData('Pressure',type(self).__name__,"must be above atmospheric")
         self._press = pressure
         self._temp = nox_on_press(pressure)
         self.dens_liq = nox_Lrho(self._temp)
@@ -66,6 +74,7 @@ class Vessel:
         else:
             self.mass_vapor = value
 
+
     @property
     def mass_vapor(self):
         return self._mass_vapor
@@ -73,7 +82,7 @@ class Vessel:
     @mass_vapor.setter
     def mass_vapor(self, value):
         if value < 0:
-            raise WrongInputData(value)
+            raise UnphysicalData()
         self._mass_vapor = value
 
     def __calculate_amount_of_liquid(self, mass=None):

@@ -7,7 +7,7 @@ import sys
 
 from Engine.Exceptions.exceptions import LowPressureDropError
 from Engine.Propellants.side_classes import Container
-from Engine.config import delta_time, get_c_star, get_Isp
+from Engine.config import delta_time, get_c_star, get_Isp, get_thrust_cF, get_combustion_temp
 
 
 class Engine:
@@ -27,7 +27,7 @@ class Engine:
         self.evaluate_chamber_pressure()
 
         self._names = ["time", "pressure_chamber", "fuel_mass_flow", "oxid_mass_flow", "pressure_vessel",
-                       "thrust", "isp", "c_star", "of", "diam_port", "gox"]
+                       "thrust", "isp", "c_star", "of", "diam_port", "gox", "temperature"]
         self._data = dict.fromkeys(self._names, [])
         for key in self._data.keys():
             self._data[key] = []
@@ -135,22 +135,23 @@ class Engine:
     def run(self, end_time=999999):
 
         time = 0
-        val = []
-        t = []
+        # val = []
+        # t = []
         while time < end_time:
 
             try:
                 if not self.next_iteration():
                     self.evaluate_chamber_pressure()
-                # self.c_star = get_c_star(self.oxid.name, self.fuel.name, self.pressure,
-                #                          self.oxid.mass_flow / self.fuel.mass_flow) ## todo check if it should be here
-                t.append(time)
+                self.c_star = get_c_star(self.oxid.name, self.fuel.name, self.pressure,
+                                         self.oxid.mass_flow / self.fuel.mass_flow) ## todo check if it should be here
+                # t.append(time)
                 # val.append(self.fuel_flow)
-                val.append(self.pressure)
+                # val.append(self.pressure)
                 self.collect_data()
                 time += delta_time
             except LowPressureDropError:
                 return self._data
+
 
             if self.pressure <= 1:
                     return self._data
@@ -174,6 +175,11 @@ class Engine:
                       self.nozzle.esp)*self.nozzle.efficiency
         self._data['isp'].append(isp)
         self._data['thrust'].append(isp * 9.81 * (self.oxid.mass_flow + self.fuel.mass_flow))
+
+        # CF = get_thrust_cF(self.oxid.name,self.fuel.name,self.pressure,self.oxid.mass_flow / self.fuel.mass_flow,self.nozzle.esp)
+        # CF = CF[0]
+        # self._data['thrust'].append(CF*self.pressure*self.nozzle.area_th*100000*self.nozzle.efficiency)
         self._data['c_star'].append(self.c_star)
         self._data['diam_port'].append(self.fuel.diam_port)
         self._data['gox'].append(self.oxid.mass_flow/self.fuel.port_area)
+        self._data['temperature'] .append(get_combustion_temp(self.oxid.name, self.fuel.name,self.pressure,self.oxid.mass_flow + self.fuel.mass_flow))

@@ -124,3 +124,11 @@ body {
 	/*margin: auto;*/
 	padding: 4px;
 }
+
+.system-message {
+	font-size:  20px;
+	font-weight: 700;
+	text-align: center;
+	color: darkred;
+	padding-top:  20px;
+}

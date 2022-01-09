@@ -138,7 +138,8 @@ function send_checkboxes(){
         'oxid_mass_flow': document.getElementById("plotOxidizerFlow").checked,
         'fuel_mass_flow': document.getElementById("plotFuelFlow").checked,
         'diam_port': document.getElementById("plotFuelPortDiameter").checked,
-        'gox': document.getElementById("flowGox").checked
+        'gox': document.getElementById("flowGox").checked,
+        'temperature': document.getElementById('plotTemperature').checked
 
     }
     var dict_2 = {
@@ -173,6 +174,7 @@ document.addEventListener("keyup", function(evnt){
 });
 eel.expose(sendLogs)
 function sendLogs(logs){
+    document.getElementById('img').innerHTML = ""
     document.getElementById("logs").innerHTML = logs
 
 }

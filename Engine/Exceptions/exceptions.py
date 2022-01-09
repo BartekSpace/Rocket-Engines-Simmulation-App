@@ -25,3 +25,8 @@ class UnphysicalData(WrongInputData):
     def __init__(self, message="correlation between vessel volume, pressure, or oxid mass is unphysical!"):
         self.message = message
         super().__init__( message= self.message)
+
+# class WarningHighGox(Exception):
+#     def __init__(self, val):
+#         self.val = val
+#         super().__init__("Warning: High Gox value, Engine could be unstable")

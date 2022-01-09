@@ -1,4 +1,7 @@
 import numpy as np
+
+
+
 np.seterr(all='ignore')
 from Engine.Propellants.propellant import Propellant
 from Engine.config import delta_time, non_negative, non_negative_val
@@ -78,6 +81,7 @@ class Fuel(Propellant):
     def calculate_mass_flow(self, oxid_flow, change_diam_port=True):
         # port_area = np.pi * (self.diam_port / 1000) ** 2 / 4
         gox = oxid_flow / self.port_area
+
         reg = self.ballistic.a * gox ** self.ballistic.n / 1000
         if change_diam_port:
             self.diam_port += 2 * 1000 * reg * delta_time

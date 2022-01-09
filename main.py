@@ -1,3 +1,3 @@
-from Engine.Gui2.gui import runApp
+from Engine.Gui.gui import runApp
 
 runApp()

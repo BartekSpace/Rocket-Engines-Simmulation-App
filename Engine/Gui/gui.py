@@ -1,149 +1,300 @@
-from kivy.app import App
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.image import Image
-from kivy.uix.button import Button
-from kivy.uix.textinput import TextInput
+import collections
 
-from kivy.uix.widget import Widget
-from Engine.Injector.injector import Injector
-from Engine.Nozzle.nozzle import Nozzle
+
+import os
+import shutil
+from tkinter import Tk, filedialog
+
+import eel
+import copy
+import importlib
+from Engine.Exceptions.exceptions import LowPressureDropError, WrongInputData, UnphysicalData, NonPositiveValue
+# from Engine.Injector.injector import Injector
+from Engine.Propellants import Fuel
+from Engine.Propellants import Oxidizer
 from Engine.Propellants.side_classes import Ballistic
-from Engine.Propellants.fuel import Fuel
-from Engine.Propellants.oxidizer import Oxidizer
-from Engine.Vessel.vessel import Vessel
 from Engine.engine_simulation import Engine
-import matplotlib.pyplot as plt
-class MyGrid(Widget):
-    pass
+from Engine.Vessel import Vessel
+from Engine.Nozzle import Nozzle
+from Engine.Injector import  Injector
+from dataPloter import Ploter
 
 
-class MyApp(App):
-    # def build(self):
-    #     #returns a window object with all it's widgets
-    #     self.window = GridLayout()
-    #     self.window.cols = 2
-    #
-    #     self.window.size_hint = (0.6, 0.7)
-    #     self.window.pos_hint = {"center_x": 0.5, "center_y":0.5}
-    #
-    #     # image widget
-    #     # self.window.add_widget(Image(source="logo.png"))
-    #
-    #     # label widget
-    #     self.greeting = Label(
-    #                     text= "What's your name?",
-    #                     font_size= 10,
-    #                     color= '#00FFCE'
-    #                     )
-    #     self.window.add_widget(self.greeting)
-    #
-    #     # text input widget
-    #     self.user = TextInput(
-    #                 multiline= False,
-    #                 padding_y= (20,20),
-    #                 size_hint= (1, 0.5)
-    #                 )
-    #
-    #     self.window.add_widget(self.user)
-    #
-    #     # button widget
-    #     self.button = Button(
-    #                   text= "GREET",
-    #                   size_hint= (1,0.5),
-    #                   bold= True,
-    #                   background_color ='#00FFCE',
-    #                   #remove darker overlay of background colour
-    #                   # background_normal = ""
-    #                   )
-    #     self.button.bind(on_press=self.callback)
-    #     self.window.add_widget(self.button)
-    #
-    #     return self.window
-    #
-    # def callback(self, instance):
-    #     # change label text to "Hello + user name!"
-    #     self.greeting.text = "Hello " + self.user.text + "!"
-
-    def build(self):
-        return MyGrid()
-
-    def store_values(self):
-        injector_hole_diam = float(self.root.ids.injector_hole_diam.text)
-        injector_hole_num = float(self.root.ids.injector_holes_num.text)
-        k_loss = float(self.root.ids.K_loss.text)
-        inj = Injector(injector_hole_num, injector_hole_diam, k_loss)
+# class Parser:
+#
+#     def __init__(self):
+#         self.oxid = None
+#         self.fuel = None
+#         self.nozzle = None
+#         self.inj = None
+#         self.vessel = None
+#         self._time = None
+#
+#     def __eq__(self, other):
+#         if not isinstance(other, Parser):
+#             return False
+#         a = self.oxid == other.oxid
+#         a &= self.fuel == other.fuel
+#         a &= self.nozzle == other.nozzle
+#         a &= self.inj == other.inj
+#         a &= self.vessel == other.vessel
+#         return a
+#
+#     @property
+#     def time(self):
+#         return self._time
+#
+#     @time.setter
+#     def time(self, val):
+#         if not isinstance(val, float):
+#             self._time = 1e20
+#         else:
+#             self._time = val
+#         # return self.__dict__ == other.__dict__
 
 
+class Cache:
+    def __init__(self):
+        self._engine = collections.deque(maxlen=2)
+        # self._que.append(Parser())
+        self._engine.append(None)
+        self._data = None
+        self._time = collections.deque(maxlen=2)
 
-        throat_diam = float(self.root.ids.throat_diameter.text)
-        exit_diam = float(self.root.ids.exit_diameter.text)
-        nozzle = Nozzle(exit_diam,throat_diam)
+    @property
+    def time(self):
+        return self._time
 
-        fuel_len = float(self.root.ids.fuel_length.text)
-        fuel_port_diam = float(self.root.ids.fuel_port_diameter.text)
-        fuel_dens = float(self.root.ids.fuel_density.text)
-        fuel_a = float(self.root.ids.fuel_a.text)
-        fuel_n = float(self.root.ids.fuel_n.text)
-        fuel_name = self.root.ids.fuel_name.text
-        fuel_formula = self.root.ids.fuel_formula.text
-        fuel_enth = float(self.root.ids.fuel_enth.text)
-        fuel_temp = float(self.root.ids.fuel_temp.text)
-
-        fuel = Fuel(fuel_temp, fuel_enth, fuel_name, fuel_formula, fuel_port_diam, fuel_len, fuel_dens, Ballistic(fuel_a, fuel_n))
-
-        oxid_name = self.root.ids.oxid_name.text
-        oxid_formula = self.root.ids.oxid_formula.text
-        oxid_enth = float(self.root.ids.oxid_enth.text)
-        oxid_temp = float(self.root.ids.oxid_temp.text)
-        oxid = Oxidizer(oxid_temp, oxid_enth, oxid_name, oxid_formula)
-
-        vessel_press = float(self.root.ids.vessel_press.text)
-        vessel_vol = float(self.root.ids.vessel_vol.text) / 1000
-        oxid_mass = float(self.root.ids.oxid_mass.text)
-        ves = Vessel(vessel_press, vessel_vol, oxid_mass)
-
-        engine = Engine(ves, inj, nozzle, fuel, oxid)
-        data = engine.run(float(self.root.ids.time.text))
-
-        import csv
-        with open('../../Thrust.txt') as f:
-            reader = csv.DictReader(f)
-            t = []
-            val = []
-            for row in reader:
-                t.append(float(row['Timestamp']))
-                val.append(float(row['Value']))
-                if float(row['Timestamp']) > 10:
-                    break
-                # print(row['Timestamp'], row['Value'])
-            plt.plot(data['time'], data['thrust'],t, val )
-            plt.show()
-
-        # plt.plot(data['time'], data['pressure_combustion'])
-        # plt.show()
-        # print(1)
-        # ves = Vessel(60, 0.015, 10)
-        # nozzle = Nozzle(72, 33)
-        # inj = Injector(36, 1.5, 4.2)
-        # b = Ballistic(0.00772597539149796, 0.777265794840152)
-        # fuel = Fuel(300, 67.69, 'nyl', 'C 6.0   H 11.0   O 1.0  N 1.0', 61, 1000, 1130, b)
-        # oxid = Oxidizer(300, 75.24, 'nitrous', 'N 2 O 1')
-        # engine = Engine(ves, inj, nozzle, fuel, oxid)
-        # # start_time = time.time()
-        # data = engine.run()
-        # # print("--- %s seconds ---" % (time.time() - start_time))
-        # plt.plot(data['time'], data['pressure_combustion'])
-        # plt.show()
+    # @time.setter
+    # def time(self, val):
+    #     if not isinstance(val, float):
+    #         self._time = 1e20
+    #     else:
+    #         self._time = val
 
 
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, data):
+        self._data = data
+
+    @property
+    def engine(self):
+        return self._engine
+
+
+# parser = Parser()
+ploter = Ploter()
+cache = Cache()
+
+
+@eel.expose
+def save_cache(time, engine):
+    # parser.time = gently_float(time)
+    # # cache.append(copy.deepcopy(parser))
+    # cache.que.append(copy.deepcopy(parser))
+    cache.time.append(gently_float(time))
+    cache.engine.append(copy.deepcopy(engine))
+
+
+def gently_float(element):
+    try:
+        return float(element)
+    except ValueError:
+        return element
+
+
+# @eel.expose
+def injector(*args):
+    args_list = [float(arg) for arg in args]
+    # parser.inj = Injector(*args_list)
+    return Injector(*args_list)
+
+
+# @eel.expose
+def nozzle(*args):
+    args_list = [float(arg) for arg in args]
+    # parser.nozzle = Nozzle(*args_list)
+    return Nozzle(*args_list)
+
+
+# @eel.expose
+def vessel(*args):
+    args_list = [float(arg) for arg in args]
+    args_list[1] = args_list[1] / 1000
+    # parser.vessel = Vessel(*args_list)
+    return Vessel(*args_list)
+
+
+# @eel.expose
+def fuel(*args):
+    args_list = [gently_float(arg) for arg in args]
+    b = Ballistic(*args_list[-2:])
+    args_list.pop()
+    args_list.pop()
+    args_list.append(b)
+    # parser.fuel = Fuel(*args_list)
+    return Fuel(*args_list)
+
+
+# @eel.expose
+def oxid(*args):
+    args_list = [gently_float(arg) for arg in args]
+    # parser.oxid = Oxidizer(*args_list)
+    return Oxidizer(*args_list)
+
+
+# def str_to_class(module_name, class_name):
+#     """Return a class instance from a string reference"""
+#     try:
+#         module_ = importlib.import_module(module_name)
+#         try:
+#             class_ = getattr(module_, class_name)()
+#         except AttributeError:
+#             logging.error('Class does not exist')
+#     except ImportError:
+#         logging.error('Module does not exist')
+#     return class_ or None
+
+def build_engine(params):
+    return Engine(vessel(*params['Vessel']), injector(*params['Injector']), nozzle(*params['Nozzle']),fuel(*params['Fuel']),oxid(*params['Oxidizer']))
+
+@eel.expose
+def earseData():
+    ploter._real_data_full = []
+    ploter.real_data = []
+
+@eel.expose
+def run(config, time,engine_params):
+    # ploter.sim_plots = 0
+    # ploter.compare_plots = 0
+
+    time = gently_float(time)
+
+    if not isinstance(time, float) or time<0:
+        time = 1e20
+
+
+    params = config[0]
+    flags = config[1]
+
+    # params['temperature'] = True
+
+    # end = None
+    try:
+    # engine = Engine(parser.vessel, parser.inj, parser.nozzle, parser.fuel, parser.oxid)
+        engine = build_engine(engine_params)
+        save_cache(time, engine)
+
+    except UnphysicalData as e:
+        print(e.message)
+        # earseData()
+        eel.sendLogs(e.message)
+        return
+
+    except  NonPositiveValue as e:
+        print(f"{e.source}: {e.param} = {e.value} ! {e.message}")
+        # earseData()
+        eel.sendLogs(f"{e.source}: {e.param} = {e.value} ! {e.message}")
+        return
+
+    except WrongInputData as e:
+        print(f"{e.source}: {e.param} = {e.value} ! {e.message}")
+        # earseData()
+        eel.sendLogs(f"{e.source}: {e.param} = {e.value} ! {e.message}")
+        return
+
+    except LowPressureDropError as e:
+        print(f"{e.message} tip: consider increasing throat diameter")
+        # earseData()
+        eel.sendLogs(e.message)
+        return
+    except Exception as e:
+        eel.sendLogs("Unknown Error")
+        return
+
+        # print(e.message)
 
 
 
 
-# run Say Hello App Calss
-# if __name__ == "__main__":
-#     SayHello().run()
+    shutil.rmtree('./Engine/Gui/www/img/')
+    os.mkdir('./Engine/Gui/www/img')
 
-if __name__ == "__main__":
-    MyApp().run()
+    # if cache.que[0] == cache.que[1] and cache.que[1].time <= cache.que[0].time:
+    if cache.engine[0] == cache.engine[1] and cache.time[1] <= cache.time[0]:
+        ploter.data = cache.data
+        # if cache.que[1].time < cache.que[0].time:  # if simulation should be shorter but data is the same
+        if cache.time[1] < cache.time[0]:  # if simulation should be shorter but data is the same
+            # end = cache1.que[1].time
+            # ploter.truncate_sim(parser.time)
+            ploter.truncate_sim(time)
+    else:  # if cache have changed re-run calculation
+        try:
+            # ploter.data = engine.run(parser.time)
+            ploter.data = engine.run(time)
+        except LowPressureDropError as e:
+            print(e.message)
+
+        except UnphysicalData as e:
+            print(e.message)
+        except WrongInputData as e:
+            print(e.message)
+
+    cache.data = ploter.data
+    ploter.truncate()
+    if flags['allPressures'] and params['pressure_chamber'] and params['pressure_vessel']:
+        params['pressure_chamber'] = False
+        params['pressure_vessel'] = False
+        params['pressure'] = True
+
+    if flags['allMassFlows'] and params['fuel_mass_flow'] and params['oxid_mass_flow']:
+        params['fuel_mass_flow'] = False
+        params['oxid_mass_flow'] = False
+        params['flow'] = True
+
+    if flags['realAndSimulated']:
+        for key in params:
+            if params[key]:
+                ploter.compare(key)
+    else:
+        for key in params:
+            if params[key]:
+                ploter.plot_real(key)
+                ploter.plot_simulation(key)
+
+    filenames = next(os.walk('./Engine/Gui/www/img/'), (None, None, []))[2]
+    paths = ['img/' + name for name in filenames]
+    # paths_sim = [ 'img/sim_plot_' + key + '.png' for key in params if params[key]]
+    # paths_real = [ 'img/real_plot_' + key + '.png' for key in params if params[key] and  ("pressure" in key or "thrust" in key)]
+    eel.manage_images(paths)
+
+
+def runApp():
+    eel.init("Engine/Gui/www")
+    eel.start("view.html")
+
+
+@eel.expose
+def btn_ResimyoluClick():
+    root = Tk()
+    root.withdraw()
+    root.wm_attributes('-topmost', 1)
+    # folder = filedialog.askdirectory()
+    files = filedialog.askopenfiles()
+    # ff = files
+    ploter.read_hotflow_data(files)
+    return [os.path.basename(file.name) for file in files]
+
+
+
+
+
+
+
+
+    # return  files
+    # return folder

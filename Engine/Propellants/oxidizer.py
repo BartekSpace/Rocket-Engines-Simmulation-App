@@ -18,7 +18,8 @@ class Oxidizer(Propellant):
     def __init__(self, temp, enth, name, formula):
         super().__init__(temp, enth, name, formula)
         self.add_propellant()
-        self._mass_flow = Container(0.00001)  ## nonzero value
+        self._mass_flow = Container(0.1)  ## nonzero value
+        # self._mass_flow = Container(0.00001)
         self._vaporized_mass = 0.00001
         self.init = None
 
@@ -49,11 +50,11 @@ class Oxidizer(Propellant):
     #     return self._vaporized_mass
     #
 
-    def calculate_mass_flow(self, vessel, injector, pressure):
+    def calculate_mass_flow(self, vessel, injector, pressure, evaluation = False):
         drop = vessel.press - pressure
         if drop < 0.00001:
             drop = 0.00001
-        if drop / pressure < 0.2:
+        if drop / pressure < 0.2 and evaluation is False:
             # pass# safety reason, prevent backflow and instabilities
             raise LowPressureDropError(drop)
         # if type(self) is LiquidPhase:

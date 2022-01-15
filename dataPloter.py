@@ -1,9 +1,43 @@
+import matplotlib
 import numpy as np
 np.seterr(all='ignore')
-
+from sympy import pretty_print as pp, latex
+from sympy.abc import a, b, n
 import pandas as pd
 import matplotlib.pyplot as plt
 from itertools import chain
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 17}
+
+axes = {
+        'labelsize': 19,
+        'titlesize': 35,
+        'labelweight': 'bold'
+
+         }
+
+# title = {
+#     'fontweight': 'bold'
+# }
+lines = {'linewidth' : 4}
+
+matplotlib.rc('axes', **axes)
+legend = {'loc': 'upper right',
+          'fontsize': 15}
+figsize = (22, 15)
+figsize = [val / 2.54 for val in figsize]
+
+# xlabel = {'fontsize': 15}
+
+figure = {'figsize': figsize}
+# matplotlib.rc('legend', loc = 'upper left')
+# matplotlib.rc('title', **title)
+matplotlib.rc('lines', **lines)
+matplotlib.rc('legend', **legend)
+matplotlib.rc('figure', **figure)
+matplotlib.rc('font', **font)
+# matplotlib.rc('xlabel',**xlabel )
 
 
 def prepare_axis_name(name):
@@ -18,9 +52,10 @@ def prepare_axis_name(name):
     elif "diam" in name:
         y = "Fuel Port Diameter [mm]"
     elif "of" in name:
-        y = "OF"
+        y = "Of"
     elif "gox" in name:
-        y = "Gox [kg/(m^2*s)]"
+        y = r'$\frac{kg}{m^2*s}$'
+        # y = "Gox [kg/(m^2*s)]"
     else:
         y = name
 
@@ -76,13 +111,14 @@ class Ploter():
         leg = ax.legend()
         # plt.show()
         plt.xticks(np.arange(0, max(self._sim_data['time']) + 1, 1.0))
-        plt.xlabel("Time [s]")
-        plt.ylabel(prepare_axis_name(name))
-        plt.title(name.replace('_', ' ').title())
+        plt.xlabel("Time [s]", fontsize = 25)
+        plt.ylabel(prepare_axis_name(name), fontsize =25)
+        plt.title(name.replace('_', ' ').title(), fontweight = 'bold')
         # plt.legend(sim, sim_names)
         # plt.legend(loc="upper left")
         # ax.autoscale()
         plt.grid()
+        plt.tight_layout()
         plt.savefig(f"{path}_{name}.png")
         plt.close()
         # plt.show()
@@ -117,13 +153,14 @@ class Ploter():
         leg = ax.legend()
         # plt.show()
         plt.xticks(np.arange(0, max(self._sim_data['time']) + 1, 1.0))
-        plt.xlabel("Time [s]")
-        plt.ylabel(prepare_axis_name(name))
+        plt.xlabel("Time [s]", fontsize = 25)
+        plt.ylabel(prepare_axis_name(name), fontsize = 25)
         # plt.legend(sim, sim_names)
         # plt.legend(loc="upper left")
         # ax.autoscale()
         plt.grid()
-        plt.title(name.replace('_', ' ').title())
+        plt.title(name.replace('_', ' ').title(), fontweight = 'bold')
+        plt.tight_layout()
         plt.savefig(f"{path}_{name}.png")
         plt.close()
         # plt.show()
@@ -151,9 +188,11 @@ class Ploter():
             ax.plot(self._sim_data['time'][:-num], self._sim_data[name][:-num], label=name.replace('_', ' ')+" simulation")
         ax.grid()
         ax.legend()
-        plt.xlabel("Time [s]")
-        plt.ylabel(prepare_axis_name(name))
-        plt.title(name.replace('_', ' ').title())
+        plt.xlabel("Time [s]", fontsize = 25)
+        plt.ylabel(prepare_axis_name(name), fontsize = 25)
+        plt.title(name.replace('_', ' ').title(), fontweight='bold')
+
+        plt.tight_layout()
         plt.savefig(f"{path}_{name}.png")
         plt.close()
 

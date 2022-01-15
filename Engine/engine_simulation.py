@@ -22,9 +22,12 @@ class Engine:
         self._fuel = fuel
 
 
-        self.c_star = 1000  # nonzero value
+        self.c_star = 1000.7  # nonzero value
+        # self.c_star = get_c_star(oxid.name,fuel.name, 30,7)
 
         self.evaluate_chamber_pressure()
+
+        # self.pressure = 30
 
         self._names = ["time", "pressure_chamber", "fuel_mass_flow", "oxid_mass_flow", "pressure_vessel",
                        "thrust", "isp", "c_star", "of", "diam_port", "gox", "temperature"]
@@ -115,22 +118,123 @@ class Engine:
     #                                  self.oxid._mass_flow.val / self.fuel_flow)
     #     self.pressure = press.val
 
+    # def evaluate_chamber_pressure(self):
+    #
+    #
+    #     press = Container(10, 1)
+    #
+    #
+    #     while press / press.old > 1.000001 or press.old / press > 1.000001:
+    #     # while press / press.old > 1.001 or press.old / press > 1.001:
+    #
+    #
+    #         self.fuel.calculate_mass_flow(self.oxid.mass_flow, change_diam_port=False)
+    #         press.val = self.nozzle.calculate_chamber_pressure(self.c_star,
+    #                                                            self.oxid.mass_flow + self.fuel.mass_flow)
+    #
+    #         self.oxid.calculate_mass_flow(self.vessel, self.injector, press, evaluation=True)
+    #         self.c_star = get_c_star(self.oxid.name, self.fuel.name, press,
+    #                                  self.oxid.mass_flow / self.fuel.mass_flow)
+    #         #
+    #         #
+    #         # self.c_star = get_c_star(self.oxid.name, self.fuel.name, 30,
+    #         #                          self.oxid.mass_flow / self.fuel.mass_flow)
+    #         # self.c_star = self.nozzle.calculate_c_star(press,self.oxid.mass_flow / self.fuel.mass_flow)
+    #     self.pressure = press.val
+
+    # def evaluate_chamber_pressure(self):
+    #     press = Container(10, 1)
+    #
+    #     step = 0.001
+    #
+    #     press_a = 10
+    #     C_star = Container(1000, 500)
+    #     # C_star = Container(9999, 2999)
+    #     while True:
+    #
+    #         while True:
+    #             self.oxid.calculate_mass_flow(self.vessel, self.injector, press_a, evaluation=True)
+    #             self.fuel.calculate_mass_flow(self.oxid.mass_flow, change_diam_port=False)
+    #
+    #
+    #             press_b = self.nozzle.calculate_chamber_pressure(self.c_star, self.oxid.mass_flow + self.fuel.mass_flow)
+    #
+    #             if press_a / press_b > 1.001:
+    #                 press.val-=step
+    #
+    #             elif press_b/ press_a > 1.001:
+    #                 press.val+=step
+    #             else:
+    #                 break
+    #             press_a = press.val
+    #
+    #         self.pressure = press.val
+    #         self.c_star  = get_c_star(self.oxid.name, self.fuel.name,  self.pressure, self.oxid.mass_flow / self.fuel.mass_flow)
+    #         C_star.val = self.c_star
+    #         if abs(C_star - C_star.old) < 1:
+    #             break
+
     def evaluate_chamber_pressure(self):
-
-
         press = Container(10, 1)
 
+        step = 0.001
 
-        while press / press.old > 1.000001 or press.old / press > 1.000001:
+        press_a = 10
+        C_star = Container(1000, 500)
+        # C_star = Container(9999, 2999)
+        while abs(C_star - C_star.old) > 1:
 
+            while True:
+                self.oxid.calculate_mass_flow(self.vessel, self.injector, press_a, evaluation=True)
+                self.fuel.calculate_mass_flow(self.oxid.mass_flow, change_diam_port=False)
 
-            self.fuel.calculate_mass_flow(self.oxid.mass_flow, change_diam_port=False)
-            press.val = self.nozzle.calculate_chamber_pressure(self.c_star,
-                                                               self.oxid.mass_flow + self.fuel.mass_flow)
-            self.oxid.calculate_mass_flow(self.vessel, self.injector, press)
-            self.c_star = get_c_star(self.oxid.name, self.fuel.name, press,
+                press_b = self.nozzle.calculate_chamber_pressure(self.c_star, self.oxid.mass_flow + self.fuel.mass_flow)
+
+                if press_a / press_b > 1.001:
+                    press.val -= step
+
+                elif press_b / press_a > 1.001:
+                    press.val += step
+                else:
+                    break
+                press_a = press.val
+
+            self.pressure = press.val
+            self.c_star = get_c_star(self.oxid.name, self.fuel.name, self.pressure,
                                      self.oxid.mass_flow / self.fuel.mass_flow)
-        self.pressure = press.val
+            C_star.val = self.c_star
+
+    # def evaluate_chamber_pressure(self):
+    #     press = Container(10, 1)
+    #
+    #     step = 0.001
+    #
+    #     press_a = 10
+    #     C_star = Container(1000, 500)
+    #     # C_star = Container(9999, 2999)
+    #     press_b = 20
+    #     while abs(C_star - C_star.old) > 1:
+    #
+    #         while press_a / press_b > 1.001 or press_b / press_a > 1.001:
+    #             self.oxid.calculate_mass_flow(self.vessel, self.injector, press_a, evaluation=True)
+    #             self.fuel.calculate_mass_flow(self.oxid.mass_flow, change_diam_port=False)
+    #
+    #             press_b = self.nozzle.calculate_chamber_pressure(self.c_star, self.oxid.mass_flow + self.fuel.mass_flow)
+    #
+    #             if press_a / press_b > 1.001:
+    #                 press.val -= step
+    #
+    #             elif press_b / press_a > 1.001:
+    #                 press.val += step
+    #
+    #             press_a = press.val
+    #
+    #         self.pressure = press.val
+    #         self.c_star = get_c_star(self.oxid.name, self.fuel.name, self.pressure,
+    #                                  self.oxid.mass_flow / self.fuel.mass_flow)
+    #         C_star.val = self.c_star
+
+
 
     def run(self, end_time=999999):
 

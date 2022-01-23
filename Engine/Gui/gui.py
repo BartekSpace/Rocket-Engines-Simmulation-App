@@ -159,8 +159,15 @@ def oxid(*args):
 #         logging.error('Module does not exist')
 #     return class_ or None
 
-def build_engine(params):
-    return Engine(vessel(*params['Vessel']), injector(*params['Injector']), nozzle(*params['Nozzle']),fuel(*params['Fuel']),oxid(*params['Oxidizer']))
+def build_engine(params, flags):
+    return Engine(vessel(*params['Vessel']), injector(*params['Injector']), nozzle(*params['Nozzle']),fuel(*params['Fuel']),oxid(*params['Oxidizer'])
+                  ,prepare_engine_config(flags)
+                  )
+
+def prepare_engine_config(flags):
+    config = {}
+    config['equilibrium'] = flags['equilibrium']
+    return config
 
 @eel.expose
 def earseData():
@@ -186,7 +193,7 @@ def run(config, time,engine_params):
     # end = None
     try:
     # engine = Engine(parser.vessel, parser.inj, parser.nozzle, parser.fuel, parser.oxid)
-        engine = build_engine(engine_params)
+        engine = build_engine(engine_params, flags)
         save_cache(time, engine)
 
     except UnphysicalData as e:

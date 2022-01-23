@@ -145,7 +145,8 @@ function send_checkboxes(){
     var dict_2 = {
         'allPressures': document.getElementById("allPressures").checked,
         'allMassFlows': document.getElementById("allMassFlows").checked,
-        'realAndSimulated': document.getElementById("realAndSimulated").checked
+        'realAndSimulated': document.getElementById("realAndSimulated").checked,
+        'equilibrium': document.getElementById('equilibrium').checked
     }
     return [dict_1, dict_2]
 

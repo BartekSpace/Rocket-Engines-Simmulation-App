@@ -46,11 +46,15 @@ def non_negative_val(fun):
     return check
 
 
-def get_Isp(oxid_name, fuel_name, chamber_pressure, OF, eps_nozzle):
+def get_Isp(oxid_name, fuel_name, chamber_pressure, OF, eps_nozzle, frozen = True):
     with HiddenPrints():
+        if frozen:
+            frozen = 1
+        else:
+            frozen = 0
         C = CEA_Obj(oxName=oxid_name, fuelName=fuel_name, pressure_units='Bar', cstar_units='m/s')
         x = C.estimate_Ambient_Isp(Pc=chamber_pressure, MR=OF, eps=eps_nozzle, Pamb=1,
-                                   frozen=1)  ## todo add option for equlibrium
+                                   frozen=frozen)  ## todo add option for equlibrium
         return x[0]
 
 

@@ -12,7 +12,8 @@ from Engine.config import delta_time, get_c_star, get_Isp, get_thrust_cF, get_co
 
 class Engine:
 
-    def __init__(self, vessel, injector, nozzle, fuel, oxid):  # , nozzle, fuel): #, nozzle):
+    def __init__(self, vessel, injector, nozzle, fuel, oxid, config):  # , nozzle, fuel): #, nozzle):
+        self._config = config
         self._oxid = oxid
         # self._pressure = pressure
         self._vessel = vessel
@@ -43,6 +44,7 @@ class Engine:
         a &= self.nozzle == other.nozzle
         a &= self.injector == other.injector
         a &= self.vessel == other.vessel
+        a &= self._config == other._config
         return a
 
         # self._data['time'] = []
@@ -182,9 +184,9 @@ class Engine:
         press_a = 10
         C_star = Container(1000, 500)
         # C_star = Container(9999, 2999)
-        while abs(C_star - C_star.old) > 1:
+        while abs(C_star - C_star.old) > 1: #evaluate c_star
 
-            while True:
+            while True: #evaluate chamber pressure
                 self.oxid.calculate_mass_flow(self.vessel, self.injector, press_a, evaluation=True)
                 self.fuel.calculate_mass_flow(self.oxid.mass_flow, change_diam_port=False)
 
@@ -276,7 +278,7 @@ class Engine:
         self._data['pressure_vessel'].append(self.vessel.press)
         self._data['of'].append(self.oxid.mass_flow / self.fuel.mass_flow)
         isp = get_Isp(self.oxid.name, self.fuel.name, self.pressure, self.oxid.mass_flow / self.fuel.mass_flow,
-                      self.nozzle.esp)*self.nozzle.efficiency
+                      self.nozzle.esp, frozen= not self._config['equilibrium'])*self.nozzle.efficiency
         self._data['isp'].append(isp)
         self._data['thrust'].append(isp * 9.81 * (self.oxid.mass_flow + self.fuel.mass_flow))
 

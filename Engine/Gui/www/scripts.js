@@ -146,7 +146,8 @@ function send_checkboxes(){
         'allPressures': document.getElementById("allPressures").checked,
         'allMassFlows': document.getElementById("allMassFlows").checked,
         'realAndSimulated': document.getElementById("realAndSimulated").checked,
-        'equilibrium': document.getElementById('equilibrium').checked
+        'equilibrium': document.getElementById('equilibrium').checked,
+        'compareWithPrevious': document.getElementById('compareWithPrevious').checked
     }
     return [dict_1, dict_2]
 

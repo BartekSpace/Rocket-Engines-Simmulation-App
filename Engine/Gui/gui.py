@@ -58,7 +58,10 @@ class Cache:
         self._engine = collections.deque(maxlen=2)
         # self._que.append(Parser())
         self._engine.append(None)
-        self._data = None
+        # self._data = None
+        self._data = collections.deque(maxlen=2)
+        self._data.append(None)
+        self._data.append(None)
         self._time = collections.deque(maxlen=2)
 
     @property
@@ -79,7 +82,8 @@ class Cache:
 
     @data.setter
     def data(self, data):
-        self._data = data
+        self._data = {k:v for k,v in data.items() if not 'old' in k }
+        # self._data = data
 
     @property
     def engine(self):
@@ -231,18 +235,44 @@ def run(config, time,engine_params):
     shutil.rmtree('./Engine/Gui/www/img/')
     os.mkdir('./Engine/Gui/www/img')
 
-    # if cache.que[0] == cache.que[1] and cache.que[1].time <= cache.que[0].time:
+    # ploter.data = {}
+    # if flags['compareWithPrevious'] and cache.data:
+    #     old_dict = {k + "_old": v for k, v in cache.data.items()}
+    #     ploter.data = dict(ploter.data, **old_dict)
+
+
     if cache.engine[0] == cache.engine[1] and cache.time[1] <= cache.time[0]:
-        ploter.data = cache.data
-        # if cache.que[1].time < cache.que[0].time:  # if simulation should be shorter but data is the same
+        # ploter.data = cache.data
+        ploter.data = cache.data[1]
+
+        if flags['compareWithPrevious'] and cache.data[0]:
+            old_dict = {k + "_old": v for k, v in cache.data[0].items()}
+            ploter.data = dict(ploter.data, **old_dict)
+
+
+
         if cache.time[1] < cache.time[0]:  # if simulation should be shorter but data is the same
             # end = cache1.que[1].time
             # ploter.truncate_sim(parser.time)
             ploter.truncate_sim(time)
     else:  # if cache have changed re-run calculation
         try:
-            # ploter.data = engine.run(parser.time)
-            ploter.data = engine.run(time)
+            # ploter.data = engine.run(time)
+            engine_data = engine.run(time)
+            # ploter.data = dict(ploter.data, **engine_data)
+            ploter.data = engine_data
+            if flags['compareWithPrevious'] and cache.data[1]:
+                old_dict = {k + "_old": v for k, v in cache.data[1].items()}
+                ploter.data = dict(ploter.data, **old_dict)
+
+
+            # previous = True
+            # cache.data = ploter.data
+            cache.data.append(engine_data)
+            # if flags['compareWithPrevious'] and cache.data:
+            #     old_dict = {k+"_old" : v for k, v in cache.data.items()}
+            #     ploter.data = dict(ploter.data, **old_dict)
+
         except LowPressureDropError as e:
             print(e.message)
 
@@ -251,7 +281,7 @@ def run(config, time,engine_params):
         except WrongInputData as e:
             print(e.message)
 
-    cache.data = ploter.data
+    # cache.data = ploter.data
     ploter.truncate()
     if flags['allPressures'] and params['pressure_chamber'] and params['pressure_vessel']:
         params['pressure_chamber'] = False

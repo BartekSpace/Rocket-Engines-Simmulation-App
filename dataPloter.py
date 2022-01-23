@@ -106,14 +106,17 @@ class Ploter():
             ax.plot(df.iloc[:, 0], df.iloc[:, 1], label=list(df.columns)[1])
 
         for nm in sim_names:
-            ax.plot(self._sim_data['time'], self._sim_data[nm], label=nm.replace('_', ' ') + " simulation")
+            if "old" in nm:
+                ax.plot(self._sim_data['time_old'], self._sim_data[nm], label=nm.replace('_', ' ') + " simulation")
+            else:
+                ax.plot(self._sim_data['time'], self._sim_data[nm], label=nm.replace('_', ' ') + " simulation")
         # ax.axis('equal')
         leg = ax.legend()
         # plt.show()
         plt.xticks(np.arange(0, max(self._sim_data['time']) + 1, 1.0))
         plt.xlabel("Time [s]", fontsize = 25)
         plt.ylabel(prepare_axis_name(name), fontsize =25)
-        plt.title(name.replace('_', ' ').title(), fontweight = 'bold')
+        plt.title(name.replace('_', ' ').replace('old', '').title(), fontweight = 'bold')
         # plt.legend(sim, sim_names)
         # plt.legend(loc="upper left")
         # ax.autoscale()
@@ -166,6 +169,7 @@ class Ploter():
         # plt.show()
 
     def plot_simulation(self, name, path='Engine/Gui/www/img/sim_plot', end= None):
+        sim_names = [key for key in self._sim_data.keys() if name in key]
         num = 1
         if end:
             num = len(self._sim_data['time'])
@@ -173,24 +177,36 @@ class Ploter():
             num -= len(tmp)
 
         fig, ax = plt.subplots()
-        if name == "pressure":
+        if name == "pressure" or name == "flow":
             dict_name = list(self._sim_data.keys())
-            names = [x for x in dict_name if "pressure" in x]
-            ax.plot(self._sim_data['time'][:-num], self._sim_data[names[0]][:-num], 'r', label=names[0].replace('_', ' ')+" simulation")
-            ax.plot(self._sim_data['time'][:-num], self._sim_data[names[1]][:-num], 'b', label=names[1].replace('_', ' ')+" simulation")
+            names = [x for x in dict_name if name in x]
+            for name in names:
+                if "old" in name:
+                    ax.plot(self._sim_data['time_old'][:-num], self._sim_data[name][:-num],
+                            label=name.replace('_', ' ') + " simulation")
+                else:
+                    ax.plot(self._sim_data['time'][:-num], self._sim_data[name][:-num],
+                        label=name.replace('_', ' ') + " simulation")
 
-        elif name == "flow":
-            dict_name = list(self._sim_data.keys())
-            names = [x for x in dict_name if "flow" in x]
-            ax.plot(self._sim_data['time'][:-num], self._sim_data[names[0]][:-num], 'r', label=names[0].replace('_', ' ')+" simulation")
-            ax.plot(self._sim_data['time'][:-num], self._sim_data[names[1]][:-num], 'b', label=names[1].replace('_', ' ')+" simulation")
+            # ax.plot(self._sim_data['time'][:-num], self._sim_data[names[1]][:-num], 'b', label=names[1].replace('_', ' ')+" simulation")
+        #
+        # elif name == "flow":
+        #     dict_name = list(self._sim_data.keys())
+        #     names = [x for x in dict_name if "flow" in x]
+        #     ax.plot(self._sim_data['time'][:-num], self._sim_data[names[0]][:-num], 'r', label=names[0].replace('_', ' ')+" simulation")
+        #     ax.plot(self._sim_data['time'][:-num], self._sim_data[names[1]][:-num], 'b', label=names[1].replace('_', ' ')+" simulation")
         else:
-            ax.plot(self._sim_data['time'][:-num], self._sim_data[name][:-num], label=name.replace('_', ' ')+" simulation")
+            for name in sim_names:
+                if "old" in name:
+                    ax.plot(self._sim_data['time_old'][:-num], self._sim_data[name][:-num],
+                            label=name.replace('_', ' ') + " simulation")
+                else:
+                    ax.plot(self._sim_data['time'][:-num], self._sim_data[name][:-num], label=name.replace('_', ' ')+" simulation")
         ax.grid()
         ax.legend()
         plt.xlabel("Time [s]", fontsize = 25)
         plt.ylabel(prepare_axis_name(name), fontsize = 25)
-        plt.title(name.replace('_', ' ').title(), fontweight='bold')
+        plt.title(name.replace('_', ' ').replace('old', '').title(), fontweight='bold')
 
         plt.tight_layout()
         plt.savefig(f"{path}_{name}.png")
